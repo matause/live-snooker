@@ -202,24 +202,24 @@ public class Table {
 	private void moveBall(Ball ball, double time) {
 		ball.setPositionX(ball.getPositionX() + ball.getSpeedX() * time);
 		ball.setPositionY(ball.getPositionY() + ball.getSpeedY() * time);
-		if (ball.getPositionX() >= LENGTH) {
+		if (ball.getPositionX() >= LENGTH - Ball.RADIUS) {
 			ball.setPositionX(ball.getPositionX() - 2
-					* (ball.getPositionX() - LENGTH));
+					* (ball.getPositionX() - LENGTH + Ball.RADIUS));
 			ball.setSpeedX(-ball.getSpeedX());
 		}
-		if (ball.getPositionX() <= 0) {
+		if (ball.getPositionX() <= Ball.RADIUS) {
 			ball.setPositionX(ball.getPositionX() + 2
-					* (0 - ball.getPositionX()));
+					* (Ball.RADIUS - ball.getPositionX()));
 			ball.setSpeedX(-ball.getSpeedX());
 		}
-		if (ball.getPositionY() >= WIDTH) {
+		if (ball.getPositionY() >= WIDTH - Ball.RADIUS) {
 			ball.setPositionY(ball.getPositionY() - 2
-					* (ball.getPositionY() - WIDTH));
+					* (ball.getPositionY() - WIDTH + Ball.RADIUS));
 			ball.setSpeedY(-ball.getSpeedY());
 		}
-		if (ball.getPositionY() <= 0) {
+		if (ball.getPositionY() <= Ball.RADIUS) {
 			ball.setPositionY(ball.getPositionY() + 2
-					* (0 - ball.getPositionY()));
+					* (Ball.RADIUS - ball.getPositionY()));
 			ball.setSpeedY(-ball.getSpeedY());
 		}
 	}
@@ -256,9 +256,9 @@ public class Table {
 			ball = balls[i];
 			ball.setSpeedX(ball.getSpeedX() * 0.99);
 			ball.setSpeedY(ball.getSpeedY() * 0.99);
-			if (Math.abs(ball.getSpeedX()) < 0.1)
+			double v2 = ball.getSpeedX()*ball.getSpeedX() + ball.getSpeedY()* ball.getSpeedY();
+			if(v2 <0.01){
 				ball.setSpeedX(0);
-			if (Math.abs(ball.getSpeedY()) < 0.1) {
 				ball.setSpeedY(0);
 			}
 			if (!(DoubleUtil.isZero(ball.getSpeedX()) && DoubleUtil.isZero(ball
