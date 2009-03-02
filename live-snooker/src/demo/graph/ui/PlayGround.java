@@ -9,6 +9,8 @@ import java.awt.RenderingHints;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.Line2D;
 import java.util.Collection;
 import java.util.LinkedList;
 
@@ -203,25 +205,37 @@ public class PlayGround {
 		}
 
 		private void paintAiming(Graphics2D g) {
-			g.setColor(Color.black);
+			g.setColor(Color.DARK_GRAY);
 			if (allowAiming && aimingPoint.getX() >= 0
 					&& aimingPoint.getY() >= 0) {
-				int ox = (int) table.getBalls()[0].getPositionX();
-				int oy = (int) table.getBalls()[0].getPositionY();
-				int dx = (int) aimingPoint.getX();
-				int dy = (int) aimingPoint.getY();
+				double ox = table.getBalls()[0].getPositionX();
+				double oy = table.getBalls()[0].getPositionY();
+				double dx = aimingPoint.getX();
+				double dy = aimingPoint.getY();
 				double r = Ball.RADIUS;
-				g.drawOval((int) (dx - r), (int) (dy - r), (int) (2 * r + 1),
-						(int) (2 * r + 1));
-				g.drawLine(dx, (int) (dy - r), dx, (int) (dy + r));
-				g.drawLine((int) (dx - r), dy, (int) (dx + r), dy);
-				g.drawLine(ox, oy, dx, dy);
+				Ellipse2D.Double circle = new Ellipse2D.Double(dx - r + 0.5, dy
+						- r + 0.5, 2 * r, 2 * r);
+				g.draw(circle);
+				g.drawLine((int) dx, (int) (dy - r), (int) dx, (int) (dy + r));
+				g.drawLine((int) (dx - r), (int) dy, (int) (dx + r), (int) dy);
+
+				double t = (Ball.RADIUS + 1)
+						/ Math.sqrt((ox - dx) * (ox - dx) + (oy - dy)
+								* (oy - dy));
+				double deltaX = t * (ox - dx);
+				double deltaY = t * (oy - dy);
+				Line2D.Double line = new Line2D.Double(ox - deltaX, oy - deltaY, dx
+						+ deltaX, dy + deltaY);
+				g.draw(line);
 			}
 		}
 
 		private void paintTable(Graphics2D g) {
+
 			g.setColor(ColorConstants.TABLE_GREEN);
 			g.fillRect(0, 0, (int) Table.LENGTH, (int) Table.WIDTH);
+			//g.setColor(Color.white);
+			//g.drawRect(0, 0, (int) Table.LENGTH-1, (int) Table.WIDTH-1);
 			g.setColor(Color.lightGray);
 			g.drawLine((int) SnookerTableConstants.BAULK_LINE_TO_BOTTOM, 0,
 					(int) SnookerTableConstants.BAULK_LINE_TO_BOTTOM,
@@ -240,13 +254,13 @@ public class PlayGround {
 		}
 
 		private void paintBalls(Graphics2D g) {
-
+			Ellipse2D.Double circle = new Ellipse2D.Double(0, 0,
+					2 * Ball.RADIUS, 2 * Ball.RADIUS);
 			for (Ball ball : table.getBalls()) {
 				g.setColor(ballColors[ball.getBallType().getTypeValue()]);
-				g.fillOval((int) (ball.getPositionX() - Ball.RADIUS),
-						(int) (ball.getPositionY() - Ball.RADIUS),
-						(int) (Ball.RADIUS * 2) + 1,
-						(int) (Ball.RADIUS * 2) + 1);
+				circle.x = ball.getPositionX() - Ball.RADIUS + 0.5;
+				circle.y = ball.getPositionY() - Ball.RADIUS + 0.5;
+				g.fill(circle);
 			}
 		}
 

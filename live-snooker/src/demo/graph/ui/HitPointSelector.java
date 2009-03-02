@@ -44,6 +44,8 @@ public class HitPointSelector {
 		protected void paintComponent(Graphics g) {
 			super.paintComponent(g);
 			Graphics2D g2d = (Graphics2D) g;
+			g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+					RenderingHints.VALUE_ANTIALIAS_ON);
 			centroid.x = getWidth() / 2 - 1;
 			centroid.y = getHeight() / 2 - 1;
 			g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
