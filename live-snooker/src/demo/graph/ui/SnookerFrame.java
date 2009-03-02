@@ -73,17 +73,21 @@ public class SnookerFrame extends JFrame {
 		mainPane.add(tablePane);
 		tablePane.setLocation(new Point(50,50));
 		tablePane.setBackground(mainPane.getBackground());
+		///////////////////////////
+		JPanel scoreBoardPane = playground.getScoreBoard().getScoreBoardPanel();
+		mainPane.add(scoreBoardPane);
+		scoreBoardPane.setBounds(50,475,600,50);
 		// ////////////////////////
 		JPanel hitPointSelectionPane = playground.getHitPointSelector()
 				.getPowerSelectorPanel();
 		mainPane.add(hitPointSelectionPane);
-		hitPointSelectionPane.setBounds(750, 500, 102, 102);
+		hitPointSelectionPane.setBounds(750, 450, 102, 102);
 		hitPointSelectionPane.setBackground(mainPane.getBackground());
 		// ////////////////////////
 		JPanel powerSelectionPane = playground.getPowerSelector()
 				.getPowerSelectorPanel();
 		mainPane.add(powerSelectionPane);
-		powerSelectionPane.setBounds(650, 500, 90, 102);
+		powerSelectionPane.setBounds(650, 450, 90, 102);
 		powerSelectionPane.setBackground(mainPane.getBackground());
 		// ////////////////////////
 		this.setVisible(true);

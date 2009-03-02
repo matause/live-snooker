@@ -43,12 +43,14 @@ public class PlayGround {
 	//
 	private PowerSelector powerSelector;
 	private HitPointSelector hitPointSelector;
+	private ScoreBoard scoreBoard;
 	private TablePanel tablePane;
 
 	public PlayGround() {
 		this.table = null;
 		powerSelector = new PowerSelector();
 		hitPointSelector = new HitPointSelector();
+		scoreBoard = new ScoreBoard();
 		this.tablePane = new TablePanel();
 		this.addCueBallHittedListener(new CueBallListener());
 	}
@@ -82,6 +84,10 @@ public class PlayGround {
 
 	public HitPointSelector getHitPointSelector() {
 		return hitPointSelector;
+	}
+
+	public ScoreBoard getScoreBoard() {
+		return scoreBoard;
 	}
 
 	public void addCueBallHittedListener(CueBallHittedListener listener) {
