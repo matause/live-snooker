@@ -13,7 +13,7 @@ public class GameController {
 	private PlayGround playground;
 	private int frameNum;
 	private int currentFrame;
-
+	private BallType targetBallType = BallType.RED_BALL;
 	private boolean inFrame = false;
 
 	public GameController() {
@@ -54,6 +54,8 @@ public class GameController {
 		playground.getScoreBoard().refresh();
 		// place table
 		playground.getTable().reset();
+		// other things
+		targetBallType = BallType.RED_BALL;
 	}
 
 	public void endFrame() {
@@ -63,10 +65,9 @@ public class GameController {
 	private void prepareForNextHit() {
 		int turn = playground.getScoreBoard().getTurn();
 		// refresh score and switch player
-		BallType toHit = BallType.BLACK_BALL;
 		Ball first = playground.getTable().getFirstHittedBall();
 		BallType hit = first == null ? null : first.getBallType();
-		int score = SnookerScoreCalculator.calculateScore(toHit, hit,
+		int score = SnookerScoreCalculator.calculateScore(targetBallType, hit,
 				playground.getTable().getPottedBalls());
 		if (score > 0) {
 			if (turn == ScoreBoard.PLAYER_1) {
@@ -88,6 +89,11 @@ public class GameController {
 				playground.getScoreBoard().getPlayer2().setFrameScore(
 						scr + score);
 			}
+			if (targetBallType == BallType.RED_BALL) {
+				targetBallType = BallType.COLOR_BALL;
+			} else {
+				targetBallType = BallType.COLOR_BALL;
+			}
 		} else {
 			// add score for another player and switch player
 			if (turn == ScoreBoard.PLAYER_1) {
@@ -105,6 +111,7 @@ public class GameController {
 						scr - score);
 				playground.getScoreBoard().getPlayer1().setCurrentBreak(0);
 			}
+			targetBallType = BallType.RED_BALL;
 		}
 		playground.getScoreBoard().refresh();
 		// reset potted color ball and cue ball
