@@ -15,15 +15,15 @@ import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
+import livesnooker.graph.controller.GameController;
 import livesnooker.graph.model.Table;
-
 
 /**
  * @author Devin
  * 
  */
 public class SnookerFrame extends JFrame {
-	PlayGround playground;
+	GameController controller;
 	JButton startButton;
 	JButton endButton;
 	Table table;
@@ -47,7 +47,8 @@ public class SnookerFrame extends JFrame {
 		}
 		this.setBounds(new Rectangle(200, 200, 900, 640));
 		this.setResizable(false);
-		playground = new PlayGround();
+		controller = new GameController();
+		PlayGround playground = controller.getPlayground();
 		JPanel buttonPanel = new JPanel();
 		BoxLayout bl = new BoxLayout(buttonPanel, BoxLayout.X_AXIS);
 		buttonPanel.setLayout(bl);
@@ -65,8 +66,6 @@ public class SnookerFrame extends JFrame {
 		this.add("Center", mainPane);
 		this.add("South", buttonPanel);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		table = new Table();
-		playground.setTable(table);
 
 		playground.setAllowAiming(true);
 		// ////////////////////////
