@@ -14,7 +14,6 @@ import livesnooker.graph.util.BallUtil;
 import livesnooker.graph.util.DoubleUtil;
 import livesnooker.graph.util.SnookerTableConstants;
 
-
 public class Table {
 	public static final double LENGTH = SnookerTableConstants.TABLE_LENGTH;
 	public static final double WIDTH = SnookerTableConstants.TABLE_WIDTH;
@@ -23,8 +22,14 @@ public class Table {
 	Timer timer = new Timer(10, new PeriodListener());
 	Collection<TableListener> listeners;
 
+	// hit information
+	Ball firstHittedBall;
+	Collection<Ball> pottedBalls;
+
 	public Table() {
 		initBalls();
+		firstHittedBall = null;
+		pottedBalls = new LinkedList<Ball>();
 	}
 
 	private void checkMovement() {
@@ -75,12 +80,26 @@ public class Table {
 		if (!isStable()) {
 			return false;
 		}
+		// clear hit information;
+		firstHittedBall = null;
+		pottedBalls.clear();
+		// set the cue ball;
 		Ball whiteBall = balls[0];
 		whiteBall.setSpeedX(hit.getSpeedX());
 		whiteBall.setSpeedY(hit.getSpeedY());
 		whiteBall.setHRotation(hit.getHRotation());
 		whiteBall.setVRotation(hit.getVRotation());
+		// start timer
 		timer.start();
+		return true;
+	}
+
+	public boolean reset() {
+		if (!isStable()) {
+			return false;
+		}
+		initBalls();
+		fireTableChangedEvent();
 		return true;
 	}
 
@@ -209,6 +228,13 @@ public class Table {
 	}
 
 	private void makeCollision(Ball b1, Ball b2) {
+		if (firstHittedBall == null) {
+			if (b1.getBallType() == BallType.CUE_BALL) {
+				firstHittedBall = b2;
+			} else if (b2.getBallType() == BallType.CUE_BALL) {
+				firstHittedBall = b1;
+			}
+		}
 		BallUtil.collide(b1, b2);
 	}
 
@@ -322,6 +348,33 @@ public class Table {
 		if (listeners != null) {
 			for (TableListener l : listeners) {
 				l.tableChanged(e);
+			}
+		}
+	}
+
+	public Ball getFirstHittedBall() {
+		return firstHittedBall;
+	}
+
+	public Collection<Ball> getPottedBalls() {
+		return pottedBalls;
+	}
+
+	public void resetBall(BallType ballType) {
+		if (ballType == BallType.RED_BALL) {
+			return;
+		}
+		for(Ball ball : balls){
+			if(ball.getBallType() == ballType){
+				//TODO more complicated place algorithm
+				ball.setActive(true);
+				ball.setSpeedX(0);
+				ball.setSpeedY(0);
+				ball.setHRotation(0);
+				ball.setVRotation(0);
+				ball.setPositionX(SnookerTableConstants.PLACE_POINTS[ballType.getTypeValue()].x);
+				ball.setPositionY(SnookerTableConstants.PLACE_POINTS[ballType.getTypeValue()].y);
+				
 			}
 		}
 	}
