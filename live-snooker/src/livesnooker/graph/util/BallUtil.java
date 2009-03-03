@@ -1,6 +1,6 @@
-package demo.graph.util;
+package livesnooker.graph.util;
 
-import demo.graph.model.Ball;
+import livesnooker.graph.model.Ball;
 
 public class BallUtil {
 	public static void collide(Ball b1, Ball b2) {

@@ -1,4 +1,4 @@
-package demo.graph.ui;
+package livesnooker.graph.ui;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -10,13 +10,14 @@ import java.awt.RenderingHints;
 
 import javax.swing.JPanel;
 
-import demo.graph.model.Player;
+import livesnooker.graph.model.Player;
+
 
 public class ScoreBoard {
 	private Player player1 = new Player();
 	private Player player2 = new Player();
 	private ScoreBoardPanel scoreboard;
-	private int frameNum = 19;
+	private int frameNum = 35;
 	private int turn = 0;
 
 	public ScoreBoard() {

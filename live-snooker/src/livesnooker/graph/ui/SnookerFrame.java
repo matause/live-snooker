@@ -1,4 +1,4 @@
-package demo.graph.ui;
+package livesnooker.graph.ui;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -15,7 +15,8 @@ import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-import demo.graph.model.Table;
+import livesnooker.graph.model.Table;
+
 
 /**
  * @author Devin
@@ -71,20 +72,22 @@ public class SnookerFrame extends JFrame {
 		// ////////////////////////
 		JPanel tablePane = playground.getTablePanel();
 		// mainPane.add(tablePane);
-		tablePane.setLocation(new Point(26, 25));
+		tablePane.setLocation(new Point(25, 24));
 		tablePane.setBackground(mainPane.getBackground());
 		JPanel tableContainer = new JPanel() {
+
 			Image image = Toolkit.getDefaultToolkit().getImage(
-					"images/table.png");
+					SnookerFrame.class.getClassLoader().getResource(
+							"images/table.png"));
 
 			protected void paintComponent(Graphics g) {
 				super.paintComponent(g);
-				g.drawImage(image, 0, 0, 850, 447, this);
+				g.drawImage(image, 0, 0, 849, 447, this);
 			}
 		};
 		tableContainer.setBackground(mainPane.getBackground());
 		mainPane.add(tableContainer);
-		tableContainer.setBounds(20, 20, 850, 449);
+		tableContainer.setBounds(20, 20, 849, 447);
 		tableContainer.setLayout(null);
 		tableContainer.add(tablePane);
 		// /////////////////////////

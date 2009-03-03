@@ -1,6 +1,7 @@
-package demo.graph.ui;
+package livesnooker.graph.ui;
 
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -68,6 +69,8 @@ public class HitPointSelector {
 
 	class SelectionListener extends MouseAdapter implements MouseMotionListener {
 
+		Cursor normal = new Cursor(Cursor.DEFAULT_CURSOR);
+		Cursor move = new Cursor(Cursor.HAND_CURSOR);
 		@Override
 		public void mouseMoved(MouseEvent e) {
 			int x = e.getX();
@@ -75,9 +78,9 @@ public class HitPointSelector {
 			double distance = (x - centroid.x) * (x - centroid.x)
 					+ (y - centroid.y) * (y - centroid.y);
 			if (distance < validRadius * validRadius) {
-				if (movingHitPoint) {
-					// TODO set mouse pointer
-				}
+					selectorPane.setCursor(move);
+			}else{
+				selectorPane.setCursor(normal);
 			}
 
 		}
@@ -87,12 +90,13 @@ public class HitPointSelector {
 			int y = e.getY();
 			double distance = (x - centroid.x) * (x - centroid.x)
 					+ (y - centroid.y) * (y - centroid.y);
-			if (distance < validRadius * validRadius) {
-				if (movingHitPoint) {
+			if (distance < validRadius * validRadius &&movingHitPoint) {
 					hitPoint.x = centroid.x - x;
 					hitPoint.y = centroid.y - y;
 					selectorPane.repaint();
-				}
+					selectorPane.setCursor(move);
+			}else{
+				selectorPane.setCursor(normal);
 			}
 
 		}

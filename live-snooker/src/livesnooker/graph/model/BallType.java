@@ -1,4 +1,4 @@
-package demo.graph.model;
+package livesnooker.graph.model;
 
 public enum BallType {
 	CUE_BALL, RED_BALL, YELLOW_BALL, GREEN_BALL, BROWN_BALL, BLUE_BALL, PINK_BALL, BLACK_BALL;

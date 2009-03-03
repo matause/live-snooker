@@ -1,6 +1,6 @@
-package demo.graph.ui.events;
+package livesnooker.graph.ui.events;
 
-import demo.graph.model.Table;
+import livesnooker.graph.model.Table;
 
 public class TableEvent {
 	private Table table;
