@@ -1,4 +1,4 @@
-package demo.graph.model;
+package livesnooker.graph.model;
 
 import java.awt.Point;
 import java.awt.event.ActionEvent;
@@ -8,11 +8,12 @@ import java.util.LinkedList;
 import javax.swing.AbstractAction;
 import javax.swing.Timer;
 
-import demo.graph.ui.events.TableEvent;
-import demo.graph.ui.events.TableListener;
-import demo.graph.util.BallUtil;
-import demo.graph.util.DoubleUtil;
-import demo.graph.util.SnookerTableConstants;
+import livesnooker.graph.ui.events.TableEvent;
+import livesnooker.graph.ui.events.TableListener;
+import livesnooker.graph.util.BallUtil;
+import livesnooker.graph.util.DoubleUtil;
+import livesnooker.graph.util.SnookerTableConstants;
+
 
 public class Table {
 	public static final double LENGTH = SnookerTableConstants.TABLE_LENGTH;
@@ -32,7 +33,11 @@ public class Table {
 			double min = 1000;
 			double temp = -1;
 			for (int i = 0; i < balls.length - 1; i++) {
+				if (!balls[i].isActive())
+					continue;
 				for (int j = i + 1; j < balls.length; j++) {
+					if (!balls[j].isActive())
+						continue;
 					temp = calcColisionTime(balls[i], balls[j]);
 					if (temp < 0) {
 						continue;
@@ -47,10 +52,15 @@ public class Table {
 				min = timeleft;
 			}
 			for (int i = 0; i < balls.length; i++) {
-				moveBall(balls[i], min);
+				if (balls[i].isActive())
+					moveBall(balls[i], min);
 			}
 			for (int i = 0; i < balls.length - 1; i++) {
+				if (!balls[i].isActive())
+					continue;
 				for (int j = i + 1; j < balls.length; j++) {
+					if (!balls[j].isActive())
+						continue;
 					if (willColide(balls[i], balls[j])) {
 						makeCollision(balls[i], balls[j]);
 					}
@@ -193,6 +203,9 @@ public class Table {
 		balls[19] = createColorBall(BallType.BLUE_BALL);
 		balls[20] = createColorBall(BallType.PINK_BALL);
 		balls[21] = createColorBall(BallType.BLACK_BALL);
+		for (Ball ball : balls) {
+			ball.setActive(true);
+		}
 	}
 
 	private void makeCollision(Ball b1, Ball b2) {
@@ -225,8 +238,8 @@ public class Table {
 	}
 
 	private void placeBall(Ball ball, int i) {
-		double delta_x = Ball.RADIUS * Math.sqrt(3) + 0.5;
-		double delta_y = Ball.RADIUS + 0.5;
+		double delta_x = Ball.RADIUS * Math.sqrt(3) + 0.01;
+		double delta_y = Ball.RADIUS + 0.01;
 		Point p = SnookerTableConstants.PLACE_POINTS[BallType.RED_BALL
 				.getTypeValue()];
 		double x = p.x;
@@ -250,20 +263,21 @@ public class Table {
 	}
 
 	private void slowDown() {
-		Ball ball = null;
 		boolean temp = true;
-		for (int i = 0; i < balls.length; i++) {
-			ball = balls[i];
-			ball.setSpeedX(ball.getSpeedX() * 0.99);
-			ball.setSpeedY(ball.getSpeedY() * 0.99);
-			double v2 = ball.getSpeedX()*ball.getSpeedX() + ball.getSpeedY()* ball.getSpeedY();
-			if(v2 <0.01){
-				ball.setSpeedX(0);
-				ball.setSpeedY(0);
-			}
-			if (!(DoubleUtil.isZero(ball.getSpeedX()) && DoubleUtil.isZero(ball
-					.getSpeedY()))) {
-				temp = false;
+		for (Ball ball : balls) {
+			if (ball.isActive()) {
+				ball.setSpeedX(ball.getSpeedX() * 0.99);
+				ball.setSpeedY(ball.getSpeedY() * 0.99);
+				double v2 = ball.getSpeedX() * ball.getSpeedX()
+						+ ball.getSpeedY() * ball.getSpeedY();
+				if (v2 < 0.01) {
+					ball.setSpeedX(0);
+					ball.setSpeedY(0);
+				}
+				if (!(DoubleUtil.isZero(ball.getSpeedX()) && DoubleUtil
+						.isZero(ball.getSpeedY()))) {
+					temp = false;
+				}
 			}
 		}
 		stable = temp;

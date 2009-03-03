@@ -1,4 +1,4 @@
-package demo.graph.ui.events;
+package livesnooker.graph.ui.events;
 
 public interface TableListener {
 	void tableChanged(TableEvent e);

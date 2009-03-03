@@ -1,6 +1,6 @@
-package demo.graph.model;
+package livesnooker.graph.model;
 
-import demo.graph.util.SnookerTableConstants;
+import livesnooker.graph.util.SnookerTableConstants;
 
 public class Ball {
 	public static final double RADIUS = SnookerTableConstants.BALL_RADIUS;
@@ -12,6 +12,15 @@ public class Ball {
 	private double vRotation;
 	private double hRotation;
 	private BallType ballType;
+	private boolean active;
+
+	public boolean isActive() {
+		return active;
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
+	}
 
 	public double getPositionX() {
 		return positionX;
@@ -68,5 +77,4 @@ public class Ball {
 	public void setBallType(BallType ballType) {
 		this.ballType = ballType;
 	}
-
 }

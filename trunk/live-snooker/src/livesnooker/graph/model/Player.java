@@ -1,4 +1,4 @@
-package demo.graph.model;
+package livesnooker.graph.model;
 
 public class Player {
 	private String name;

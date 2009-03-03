@@ -1,4 +1,4 @@
-package demo.graph.ui.events;
+package livesnooker.graph.ui.events;
 
 public interface CueBallHittedListener {
 	void cueBallHitted(CueBallHittedEvent e);

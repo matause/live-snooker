@@ -1,11 +1,14 @@
-package demo.graph.ui;
+package livesnooker.graph.ui;
 
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.Point;
 import java.awt.RenderingHints;
+import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
@@ -16,15 +19,16 @@ import java.util.LinkedList;
 
 import javax.swing.JPanel;
 
-import demo.graph.model.Ball;
-import demo.graph.model.BallHit;
-import demo.graph.model.Table;
-import demo.graph.ui.events.CueBallHittedEvent;
-import demo.graph.ui.events.CueBallHittedListener;
-import demo.graph.ui.events.TableEvent;
-import demo.graph.ui.events.TableListener;
-import demo.graph.util.ColorConstants;
-import demo.graph.util.SnookerTableConstants;
+import livesnooker.graph.model.Ball;
+import livesnooker.graph.model.BallHit;
+import livesnooker.graph.model.Table;
+import livesnooker.graph.ui.events.CueBallHittedEvent;
+import livesnooker.graph.ui.events.CueBallHittedListener;
+import livesnooker.graph.ui.events.TableEvent;
+import livesnooker.graph.ui.events.TableListener;
+import livesnooker.graph.util.ColorConstants;
+import livesnooker.graph.util.SnookerTableConstants;
+
 
 public class PlayGround {
 	// painting metris
@@ -187,8 +191,17 @@ public class PlayGround {
 	}
 
 	class TablePanel extends JPanel {
+		Cursor cursor;
+
 		public TablePanel() {
 			this.setSize(new Dimension((int) Table.LENGTH, (int) Table.WIDTH));
+			Image cursorIcon = Toolkit.getDefaultToolkit().getImage(
+					PlayGround.class.getClassLoader().getResource(
+							"images/aimingpoint.png"));
+			cursor = Toolkit.getDefaultToolkit().createCustomCursor(cursorIcon,
+					new Point(16, 16), "aimingpoint");
+			this.setCursor(cursor);
+
 		}
 
 		@Override
@@ -213,19 +226,21 @@ public class PlayGround {
 				double dx = aimingPoint.getX();
 				double dy = aimingPoint.getY();
 				double r = Ball.RADIUS;
-				Ellipse2D.Double circle = new Ellipse2D.Double(dx - r + 0.5, dy
-						- r + 0.5, 2 * r, 2 * r);
-				g.draw(circle);
-				g.drawLine((int) dx, (int) (dy - r), (int) dx, (int) (dy + r));
-				g.drawLine((int) (dx - r), (int) dy, (int) (dx + r), (int) dy);
+				Ellipse2D.Double circle = new Ellipse2D.Double(dx - r, dy - r,
+						2 * r, 2 * r);
+				g.fill(circle);
+				Line2D.Double line = new Line2D.Double(dx, dy - r, dx, dy + r);
+				g.draw(line);
+				line = new Line2D.Double(dx - r, dy, dx + r, dy);
+				g.draw(line);
 
 				double t = (Ball.RADIUS + 1)
 						/ Math.sqrt((ox - dx) * (ox - dx) + (oy - dy)
 								* (oy - dy));
 				double deltaX = t * (ox - dx);
 				double deltaY = t * (oy - dy);
-				Line2D.Double line = new Line2D.Double(ox - deltaX, oy - deltaY, dx
-						+ deltaX, dy + deltaY);
+				line = new Line2D.Double(ox - deltaX, oy - deltaY, dx + deltaX,
+						dy + deltaY);
 				g.draw(line);
 			}
 		}
@@ -234,8 +249,8 @@ public class PlayGround {
 
 			g.setColor(ColorConstants.TABLE_GREEN);
 			g.fillRect(0, 0, (int) Table.LENGTH, (int) Table.WIDTH);
-			//g.setColor(Color.white);
-			//g.drawRect(0, 0, (int) Table.LENGTH-1, (int) Table.WIDTH-1);
+			// g.setColor(Color.white);
+			// g.drawRect(0, 0, (int) Table.LENGTH-1, (int) Table.WIDTH-1);
 			g.setColor(Color.lightGray);
 			g.drawLine((int) SnookerTableConstants.BAULK_LINE_TO_BOTTOM, 0,
 					(int) SnookerTableConstants.BAULK_LINE_TO_BOTTOM,
@@ -258,8 +273,8 @@ public class PlayGround {
 					2 * Ball.RADIUS, 2 * Ball.RADIUS);
 			for (Ball ball : table.getBalls()) {
 				g.setColor(ballColors[ball.getBallType().getTypeValue()]);
-				circle.x = ball.getPositionX() - Ball.RADIUS + 0.5;
-				circle.y = ball.getPositionY() - Ball.RADIUS + 0.5;
+				circle.x = ball.getPositionX() - Ball.RADIUS;
+				circle.y = ball.getPositionY() - Ball.RADIUS;
 				g.fill(circle);
 			}
 		}

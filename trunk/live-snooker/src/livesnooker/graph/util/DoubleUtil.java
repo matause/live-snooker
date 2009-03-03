@@ -1,4 +1,4 @@
-package demo.graph.util;
+package livesnooker.graph.util;
 
 public class DoubleUtil {
 	public static final double ERROR = 0.000001;

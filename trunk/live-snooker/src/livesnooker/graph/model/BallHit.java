@@ -1,4 +1,4 @@
-package demo.graph.model;
+package livesnooker.graph.model;
 
 public class BallHit {
 	private double speedX;

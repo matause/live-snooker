@@ -1,4 +1,4 @@
-package demo.graph.util;
+package livesnooker.graph.util;
 
 import java.awt.Color;
 
