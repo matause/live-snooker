@@ -1,10 +1,10 @@
 package livesnooker.graph.model;
 
 public enum BallType {
-	CUE_BALL, RED_BALL, YELLOW_BALL, GREEN_BALL, BROWN_BALL, BLUE_BALL, PINK_BALL, BLACK_BALL;
+	CUE_BALL, RED_BALL, YELLOW_BALL, GREEN_BALL, BROWN_BALL, BLUE_BALL, PINK_BALL, BLACK_BALL, COLOR_BALL;
 	private static final String[] names = new String[] { "Cue Ball",
 			"Red Ball", "Yellow Ball", "Green Ball", "Brown Ball", "Blue Ball",
-			"Pink Ball", "Black Ball" };
+			"Pink Ball", "Black Ball", "Color Ball" };
 
 	public int getTypeValue() {
 		switch (this) {
@@ -24,6 +24,8 @@ public enum BallType {
 			return 6;
 		case BLACK_BALL:
 			return 7;
+		case COLOR_BALL:
+			return 8;
 		}
 		return 0;
 	}

@@ -29,7 +29,6 @@ import livesnooker.graph.ui.events.TableListener;
 import livesnooker.graph.util.ColorConstants;
 import livesnooker.graph.util.SnookerTableConstants;
 
-
 public class PlayGround {
 	// painting metris
 	private static final Color ballColors[] = new Color[] {
@@ -53,21 +52,14 @@ public class PlayGround {
 	private TablePanel tablePane;
 
 	public PlayGround() {
-		this.table = null;
+		this.table = new Table();
+		table.addTableListener(new SnookerTableListener());
 		powerSelector = new PowerSelector();
 		hitPointSelector = new HitPointSelector();
 		scoreBoard = new ScoreBoard();
 		this.tablePane = new TablePanel();
 		this.addCueBallHittedListener(new CueBallListener());
 	}
-
-	public void setTable(Table table) {
-		this.table = table;
-		table.addTableListener(new SnookerTableListener());
-		tablePane.repaint();
-
-	}
-
 	public void setAllowAiming(boolean allow) {
 		this.allowAiming = allow;
 		if (allow == true) {
@@ -279,5 +271,9 @@ public class PlayGround {
 			}
 		}
 
+	}
+
+	public Table getTable() {
+		return table;
 	}
 }

@@ -12,13 +12,15 @@ import javax.swing.JPanel;
 
 import livesnooker.graph.model.Player;
 
-
 public class ScoreBoard {
+	public static final int PLAYER_1 = 1;
+	public static final int PLAYER_2 = 2;
+
 	private Player player1 = new Player();
 	private Player player2 = new Player();
 	private ScoreBoardPanel scoreboard;
 	private int frameNum = 35;
-	private int turn = 0;
+	private int turn = PLAYER_1;
 
 	public ScoreBoard() {
 		this.scoreboard = new ScoreBoardPanel();
@@ -121,15 +123,45 @@ public class ScoreBoard {
 			// player name
 			g.drawString(player1.getName().toUpperCase(), 30, v_start);
 			int nameWidth = fm.stringWidth(player2.getName().toUpperCase());
-			g.drawString(player2.getName().toUpperCase(), width - 30 - nameWidth, v_start);
-			
-			//draw turn
+			g.drawString(player2.getName().toUpperCase(), width - 30
+					- nameWidth, v_start);
+
+			// draw turn
 			g.setColor(yellow);
-			if(turn == 0){
-				g.fillOval(height/8, height/7, height/4, height/4);
-			}else{
-				g.fillOval( width - 3*height/8, height/7, height/4, height/4);
+			if (turn == PLAYER_1) {
+				g.fillOval(height / 8, height / 7, height / 4, height / 4);
+			} else {
+				g.fillOval(width - 3 * height / 8, height / 7, height / 4,
+						height / 4);
 			}
 		}
+	}
+
+	public void refresh(){
+		this.scoreboard.repaint();
+	}
+	
+	public Player getPlayer1() {
+		return player1;
+	}
+
+	public void setPlayer1(Player player1) {
+		this.player1 = player1;
+	}
+
+	public Player getPlayer2() {
+		return player2;
+	}
+
+	public void setPlayer2(Player player2) {
+		this.player2 = player2;
+	}
+
+	public int getTurn() {
+		return turn;
+	}
+
+	public void setTurn(int turn) {
+		this.turn = turn;
 	}
 }
