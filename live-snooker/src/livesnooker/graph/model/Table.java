@@ -1,5 +1,6 @@
 package livesnooker.graph.model;
 
+import java.awt.Frame;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.util.Collection;
@@ -14,6 +15,10 @@ import livesnooker.graph.util.BallUtil;
 import livesnooker.graph.util.DoubleUtil;
 import livesnooker.graph.util.SnookerTableConstants;
 
+/**
+ * @author Devin
+ * 
+ */
 public class Table {
 	public static final double LENGTH = SnookerTableConstants.TABLE_LENGTH;
 	public static final double WIDTH = SnookerTableConstants.TABLE_WIDTH;
@@ -33,23 +38,34 @@ public class Table {
 	}
 
 	private void checkMovement() {
+		System.out.println("haha");
 		double timeleft = 1;
 		while (!DoubleUtil.isZero(timeleft)) {
 			double min = 1000;
 			double temp = -1;
+			// calculate the time that the first collision takes place.
 			for (int i = 0; i < balls.length - 1; i++) {
 				if (!balls[i].isActive())
 					continue;
+				// check collision between balls
 				for (int j = i + 1; j < balls.length; j++) {
 					if (!balls[j].isActive())
 						continue;
-					temp = calcColisionTime(balls[i], balls[j]);
+					temp = calcCollisionTime(balls[i], balls[j]);
 					if (temp < 0) {
 						continue;
 					}
 					if (temp < min) {
 						min = temp;
 					}
+				}
+
+			}
+			// check collision with cushion
+			for (Ball ball : balls) {
+				temp = calcCollisionTimeWithCushion(ball);
+				if (temp < min) {
+					min = temp;
 				}
 			}
 			// System.out.println("min = " + min);
@@ -66,7 +82,7 @@ public class Table {
 				for (int j = i + 1; j < balls.length; j++) {
 					if (!balls[j].isActive())
 						continue;
-					if (willColide(balls[i], balls[j])) {
+					if (willCollide(balls[i], balls[j])) {
 						makeCollision(balls[i], balls[j]);
 					}
 				}
@@ -74,6 +90,24 @@ public class Table {
 			timeleft = timeleft - min;
 		}
 		slowDown();
+	}
+
+	private double calcCollisionTimeWithCushion(Ball ball) {
+		double timeX = Double.MAX_VALUE;
+		double timeY = Double.MAX_VALUE;
+		if (ball.getSpeedX() > 0) {
+			timeX = (Table.LENGTH - ball.getPositionX() - Ball.RADIUS)
+					/ ball.getSpeedX();
+		} else if (ball.getSpeedX() < 0) {
+			timeX = (Ball.RADIUS - ball.getPositionX()) / ball.getSpeedX();
+		}
+		if (ball.getSpeedY() > 0) {
+			timeY = (Table.WIDTH - ball.getPositionY() - Ball.RADIUS)
+					/ ball.getSpeedY();
+		} else if (ball.getSpeedY() < 0) {
+			timeY = (Ball.RADIUS - ball.getPositionY()) / ball.getSpeedY();
+		}
+		return Math.max(0, Math.min(timeX, timeY));
 	}
 
 	public boolean startHit(BallHit hit) {
@@ -108,7 +142,7 @@ public class Table {
 	}
 
 	// 判断两个相接的小球是否会发生碰撞
-	private boolean isColide(double x1, double y1, double x2, double y2,
+	private boolean isCollide(double x1, double y1, double x2, double y2,
 			double vx1, double vy1, double vx2, double vy2) {
 		double rx = x2 - x1;
 		double ry = y2 - y1;
@@ -147,13 +181,13 @@ public class Table {
 
 	}
 
-	private double calcColisionTime(Ball b1, Ball b2) {
-		return calculateColisionTime(b1.getPositionX(), b1.getPositionY(), b2
+	private double calcCollisionTime(Ball b1, Ball b2) {
+		return calculateCollisionTime(b1.getPositionX(), b1.getPositionY(), b2
 				.getPositionX(), b2.getPositionY(), b1.getSpeedX(), b1
 				.getSpeedY(), b2.getSpeedX(), b2.getSpeedY(), Ball.RADIUS);
 	}
 
-	private double calculateColisionTime(double x1, double y1, double x2,
+	private double calculateCollisionTime(double x1, double y1, double x2,
 			double y2, double vx1, double vy1, double vx2, double vy2, double r) {
 		double a = x1 - x2;
 		double b = vx1 - vx2;
@@ -179,7 +213,7 @@ public class Table {
 			xx = (-bb + dlt) / (2 * aa);
 		}
 		if (DoubleUtil.isZero(xx)/* Math.abs(xx) < 0.001 */) {
-			if (isColide(x1, y1, x2, y2, vx1, vy1, vx2, vy2)) {
+			if (isCollide(x1, y1, x2, y2, vx1, vy1, vx2, vy2)) {
 				xx = 0;
 			} else {
 				xx = -1;
@@ -241,26 +275,49 @@ public class Table {
 	private void moveBall(Ball ball, double time) {
 		ball.setPositionX(ball.getPositionX() + ball.getSpeedX() * time);
 		ball.setPositionY(ball.getPositionY() + ball.getSpeedY() * time);
-		if (ball.getPositionX() >= LENGTH - Ball.RADIUS) {
-			ball.setPositionX(ball.getPositionX() - 2
-					* (ball.getPositionX() - LENGTH + Ball.RADIUS));
+		checkPot(ball);
+		if (DoubleUtil.isEqual(ball.getPositionX(), ball.RADIUS)
+				|| DoubleUtil.isEqual(ball.getPositionX(), this.LENGTH
+						- Ball.RADIUS)) {
 			ball.setSpeedX(-ball.getSpeedX());
 		}
-		if (ball.getPositionX() <= Ball.RADIUS) {
-			ball.setPositionX(ball.getPositionX() + 2
-					* (Ball.RADIUS - ball.getPositionX()));
-			ball.setSpeedX(-ball.getSpeedX());
-		}
-		if (ball.getPositionY() >= WIDTH - Ball.RADIUS) {
-			ball.setPositionY(ball.getPositionY() - 2
-					* (ball.getPositionY() - WIDTH + Ball.RADIUS));
+		if (DoubleUtil.isEqual(ball.getPositionY(), ball.RADIUS)
+				|| DoubleUtil.isEqual(ball.getPositionY(), this.WIDTH
+						- Ball.RADIUS)) {
 			ball.setSpeedY(-ball.getSpeedY());
 		}
-		if (ball.getPositionY() <= Ball.RADIUS) {
-			ball.setPositionY(ball.getPositionY() + 2
-					* (Ball.RADIUS - ball.getPositionY()));
-			ball.setSpeedY(-ball.getSpeedY());
+	}
+
+	private void checkPot(Ball ball) {
+		boolean pot = false;
+		double diameter = 2 * Ball.RADIUS;
+		if (ball.getPositionY() < diameter) {
+			if (ball.getPositionX() - Ball.RADIUS < diameter) {
+				pot = true;
+			} else if (Table.LENGTH - Ball.RADIUS - ball.getPositionX() < diameter) {
+				pot = true;
+			} else if (Math.abs(Table.LENGTH / 2 - ball.getPositionX()) < diameter) {
+				if (Math.abs(ball.getSpeedY()) > Math.abs(ball.getSpeedX()) / 3) {
+					pot = true;
+				}
+			}
+		} else if (Table.WIDTH - Ball.RADIUS - ball.getPositionY() < diameter) {
+
+			if (ball.getPositionX() - Ball.RADIUS < diameter) {
+				pot = true;
+			} else if (Table.LENGTH - Ball.RADIUS - ball.getPositionX() < diameter) {
+				pot = true;
+			} else if (Math.abs(Table.LENGTH / 2 - ball.getPositionX()) < diameter) {
+				if (Math.abs(ball.getSpeedY()) > Math.abs(ball.getSpeedX()) / 3) {
+					pot = true;
+				}
+			}
 		}
+		if (pot) {
+			ball.setActive(false);
+			this.pottedBalls.add(ball);
+		}
+
 	}
 
 	private void placeBall(Ball ball, int i) {
@@ -309,7 +366,7 @@ public class Table {
 		stable = temp;
 	}
 
-	private boolean willColide(Ball b1, Ball b2) {
+	private boolean willCollide(Ball b1, Ball b2) {
 		double distance = (b1.getPositionX() - b2.getPositionX())
 				* ((b1.getPositionX() - b2.getPositionX()))
 				+ (b1.getPositionY() - b2.getPositionY())
@@ -317,7 +374,7 @@ public class Table {
 		if (distance > 4 * Ball.RADIUS * Ball.RADIUS + 0.00001) {
 			return false;
 		} else {
-			return isColide(b1.getPositionX(), b1.getPositionY(), b2
+			return isCollide(b1.getPositionX(), b1.getPositionY(), b2
 					.getPositionX(), b2.getPositionY(), b1.getSpeedX(), b1
 					.getSpeedY(), b2.getSpeedX(), b2.getSpeedY());
 		}
@@ -364,18 +421,34 @@ public class Table {
 		if (ballType == BallType.RED_BALL) {
 			return;
 		}
-		for(Ball ball : balls){
-			if(ball.getBallType() == ballType){
-				//TODO more complicated place algorithm
+		for (Ball ball : balls) {
+			if (ball.getBallType() == ballType) {
+				// TODO more complicated place algorithm
 				ball.setActive(true);
 				ball.setSpeedX(0);
 				ball.setSpeedY(0);
 				ball.setHRotation(0);
 				ball.setVRotation(0);
-				ball.setPositionX(SnookerTableConstants.PLACE_POINTS[ballType.getTypeValue()].x);
-				ball.setPositionY(SnookerTableConstants.PLACE_POINTS[ballType.getTypeValue()].y);
-				
+				ball.setPositionX(SnookerTableConstants.PLACE_POINTS[ballType
+						.getTypeValue()].x);
+				ball.setPositionY(SnookerTableConstants.PLACE_POINTS[ballType
+						.getTypeValue()].y);
+
 			}
 		}
+	}
+
+	/**
+	 * for test
+	 * 
+	 * @param args
+	 */
+	public static void main(String args[]) {
+		Frame f = new Frame();
+		f.setBounds(0, 0, 500, 500);
+		Table t = new Table();
+		BallHit hit = new BallHit(30, 0, 0, 0);
+		t.startHit(hit);
+		f.setVisible(true);
 	}
 }
