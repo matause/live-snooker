@@ -9,10 +9,8 @@ public class SnookerScoreCalculator {
 	public static final int BASE_PUNISH_SCORE = 4;
 	public static final int MAX_PUNISH_SCORE = 7;
 
-	public static int calculateScore(BallType ballTypeToPot,
+	 public static int calculateScore(BallType ballTypeToPot,
 			BallType ballTypeFirstHit, Collection<Ball> ballsPotted) {
-		System.out.println("score: target: " + ballTypeToPot + " hit: "
-				+ ballTypeFirstHit);
 		int punishScore = 0;
 		boolean punish = false;
 		if (ballTypeFirstHit == null) {
@@ -53,6 +51,7 @@ public class SnookerScoreCalculator {
 			return score;
 		}
 	}
+
 
 	private static boolean typematch(BallType type1, BallType type2) {
 		if (type1 == type2) {

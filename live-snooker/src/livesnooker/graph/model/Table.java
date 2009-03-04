@@ -37,6 +37,9 @@ public class Table {
 		pottedBalls = new LinkedList<Ball>();
 	}
 
+	/**
+	 * 
+	 */
 	private void checkMovement() {
 		System.out.println("haha");
 		double timeleft = 1;
@@ -259,6 +262,10 @@ public class Table {
 		for (Ball ball : balls) {
 			ball.setActive(true);
 		}
+		// // for test
+		for (int j = 1; j < 15; j++) {
+			balls[j].setActive(false);
+		}
 	}
 
 	private void makeCollision(Ball b1, Ball b2) {
@@ -450,5 +457,14 @@ public class Table {
 		BallHit hit = new BallHit(30, 0, 0, 0);
 		t.startHit(hit);
 		f.setVisible(true);
+	}
+
+	public boolean isRedBallCleared() {
+		for (Ball ball : balls) {
+			if (ball.getBallType() == BallType.RED_BALL && ball.isActive()) {
+				return false;
+			}
+		}
+		return true;
 	}
 }

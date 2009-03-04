@@ -15,6 +15,7 @@ public class GameController {
 	private int currentFrame;
 	private BallType targetBallType = BallType.RED_BALL;
 	private boolean inFrame = false;
+	private boolean clearingTable = false;
 
 	public GameController() {
 		this.playground = new PlayGround();
@@ -56,6 +57,9 @@ public class GameController {
 		playground.getTable().reset();
 		// other things
 		targetBallType = BallType.RED_BALL;
+		playground.getScoreBoard().setTargetBallType(targetBallType);
+		playground.getScoreBoard().refresh();
+		playground.setAllowAiming(true);
 	}
 
 	public void endFrame() {
@@ -69,6 +73,8 @@ public class GameController {
 		BallType hit = first == null ? null : first.getBallType();
 		int score = SnookerScoreCalculator.calculateScore(targetBallType, hit,
 				playground.getTable().getPottedBalls());
+		boolean faul = score < 0 ? true : false;
+		resetPottedColorBall(faul);
 		if (score > 0) {
 			if (turn == ScoreBoard.PLAYER_1) {
 				int brk = playground.getScoreBoard().getPlayer1()
@@ -92,9 +98,17 @@ public class GameController {
 			if (targetBallType == BallType.RED_BALL) {
 				targetBallType = BallType.COLOR_BALL;
 			} else {
-				targetBallType = BallType.RED_BALL;
+				if (playground.getTable().isRedBallCleared()) {
+					targetBallType = getMinColorBallType();
+					clearingTable = true;
+					if (targetBallType == null) {
+						// TODO end frame;
+						startFrame();
+					}
+				} else {
+					targetBallType = BallType.RED_BALL;
+				}
 			}
-			System.out.println("Go on, target:" + targetBallType.getTypeName());
 		} else {
 			// add score for another player and switch player
 			if (turn == ScoreBoard.PLAYER_1) {
@@ -112,19 +126,38 @@ public class GameController {
 						scr - score);
 				playground.getScoreBoard().getPlayer1().setCurrentBreak(0);
 			}
-			targetBallType = BallType.RED_BALL;
-			System.out.println("Switch player, target:"
-					+ targetBallType.getTypeName());
+			if (playground.getTable().isRedBallCleared()) {
+				targetBallType = getMinColorBallType();
+				clearingTable = true;
+				if (targetBallType == null) {
+					// TODO end frame;
+					startFrame();
+				}
+			} else {
+				targetBallType = BallType.RED_BALL;
+			}
 		}
+		playground.getScoreBoard().setTargetBallType(targetBallType);
 		playground.getScoreBoard().refresh();
 		// reset potted color ball and cue ball
-		resetPottedColorBall();
+
 		boolean flag = resetPottedCueBall();
 		if (flag) {
 			// TODO CODE for place cue ball
 		}
 		// enable aiming for next hit
 		playground.setAllowAiming(true);
+	}
+
+	private BallType getMinColorBallType() {
+		for (Ball ball : playground.getTable().getBalls()) {
+			if (ball.getBallType().getTypeValue() > BallType.RED_BALL
+					.getTypeValue()) {
+				if (ball.isActive())
+					return ball.getBallType();
+			}
+		}
+		return null;
 	}
 
 	private boolean resetPottedCueBall() {
@@ -137,13 +170,27 @@ public class GameController {
 		}
 	}
 
-	private void resetPottedColorBall() {
+	private void resetPottedColorBall(boolean faul) {
 		for (Ball ball : playground.getTable().getBalls()) {
 			if (ball.getBallType() != BallType.CUE_BALL
 					&& ball.getBallType() != BallType.RED_BALL) {
-				if (!ball.isActive()) {
-					playground.getTable().resetBall(ball.getBallType());
+				if (!clearingTable) {
+					if (!ball.isActive()) {
+						playground.getTable().resetBall(ball.getBallType());
+					}
+				} else {
+					if (ball.getBallType().getTypeValue() > targetBallType
+							.getTypeValue()) {
+						if (!ball.isActive()) {
+							playground.getTable().resetBall(ball.getBallType());
+						}
+					} else if (ball.getBallType() == targetBallType) {
+						if (faul && (!ball.isActive())) {
+							playground.getTable().resetBall(ball.getBallType());
+						}
+					}
 				}
+
 			}
 		}
 	}

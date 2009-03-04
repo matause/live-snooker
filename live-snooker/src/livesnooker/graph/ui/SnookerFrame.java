@@ -67,7 +67,6 @@ public class SnookerFrame extends JFrame {
 		this.add("South", buttonPanel);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-		playground.setAllowAiming(true);
 		// ////////////////////////
 		JPanel tablePane = playground.getTablePanel();
 		// mainPane.add(tablePane);
@@ -108,5 +107,6 @@ public class SnookerFrame extends JFrame {
 		powerSelectionPane.setBackground(mainPane.getBackground());
 		// ////////////////////////
 		this.setVisible(true);
+		controller.startFrame();
 	}
 }
