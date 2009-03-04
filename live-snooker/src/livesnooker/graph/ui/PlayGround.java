@@ -273,7 +273,6 @@ public class PlayGround {
 				g.fill(circle);
 			}
 		}
-
 	}
 
 	public Table getTable() {
