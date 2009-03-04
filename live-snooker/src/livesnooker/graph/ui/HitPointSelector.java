@@ -43,7 +43,6 @@ public class HitPointSelector {
 	class HitPointSelectorPanel extends JPanel {
 		@Override
 		protected void paintComponent(Graphics g) {
-			System.out.println("paint hit point selector");
 			super.paintComponent(g);
 			Graphics2D g2d = (Graphics2D) g;
 			g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
