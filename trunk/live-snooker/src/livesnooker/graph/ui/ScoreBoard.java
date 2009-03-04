@@ -55,6 +55,7 @@ public class ScoreBoard {
 
 		@Override
 		protected void paintComponent(Graphics g) {
+			System.out.println("paint score board");
 			super.paintComponent(g);
 			Graphics2D g2d = (Graphics2D) g;
 			g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
@@ -96,7 +97,7 @@ public class ScoreBoard {
 			Font font = new Font("Calibri", Font.BOLD, 20);
 			FontMetrics fm = getFontMetrics(font);
 			g.setColor(black);
-			setFont(font);
+			g.setFont(font);
 			String totalMatch = "(" + frameNum + ")";
 			int totalMatchWidth = fm.stringWidth(totalMatch);
 			int v_start = (vmiddle - 4 - font.getSize()) / 2 + font.getSize();
@@ -137,10 +138,10 @@ public class ScoreBoard {
 		}
 	}
 
-	public void refresh(){
+	public void refresh() {
 		this.scoreboard.repaint();
 	}
-	
+
 	public Player getPlayer1() {
 		return player1;
 	}

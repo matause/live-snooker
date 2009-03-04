@@ -92,8 +92,9 @@ public class GameController {
 			if (targetBallType == BallType.RED_BALL) {
 				targetBallType = BallType.COLOR_BALL;
 			} else {
-				targetBallType = BallType.COLOR_BALL;
+				targetBallType = BallType.RED_BALL;
 			}
+			System.out.println("Go on, target:" + targetBallType.getTypeName());
 		} else {
 			// add score for another player and switch player
 			if (turn == ScoreBoard.PLAYER_1) {
@@ -112,6 +113,8 @@ public class GameController {
 				playground.getScoreBoard().getPlayer1().setCurrentBreak(0);
 			}
 			targetBallType = BallType.RED_BALL;
+			System.out.println("Switch player, target:"
+					+ targetBallType.getTypeName());
 		}
 		playground.getScoreBoard().refresh();
 		// reset potted color ball and cue ball
@@ -154,7 +157,6 @@ public class GameController {
 		@Override
 		public void tableStabled(TableEvent e) {
 			prepareForNextHit();
-
 		}
 	}
 

@@ -60,6 +60,7 @@ public class PlayGround {
 		this.tablePane = new TablePanel();
 		this.addCueBallHittedListener(new CueBallListener());
 	}
+
 	public void setAllowAiming(boolean allow) {
 		this.allowAiming = allow;
 		if (allow == true) {
@@ -261,9 +262,12 @@ public class PlayGround {
 		}
 
 		private void paintBalls(Graphics2D g) {
+			System.out.println("paint table");
 			Ellipse2D.Double circle = new Ellipse2D.Double(0, 0,
 					2 * Ball.RADIUS, 2 * Ball.RADIUS);
 			for (Ball ball : table.getBalls()) {
+				if (!ball.isActive())
+					continue;
 				g.setColor(ballColors[ball.getBallType().getTypeValue()]);
 				circle.x = ball.getPositionX() - Ball.RADIUS;
 				circle.y = ball.getPositionY() - Ball.RADIUS;
