@@ -7,9 +7,12 @@ import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.geom.Ellipse2D;
 
 import javax.swing.JPanel;
 
+import livesnooker.graph.model.Ball;
+import livesnooker.graph.model.BallType;
 import livesnooker.graph.model.Player;
 
 public class ScoreBoard {
@@ -21,6 +24,7 @@ public class ScoreBoard {
 	private ScoreBoardPanel scoreboard;
 	private int frameNum = 35;
 	private int turn = PLAYER_1;
+	private BallType targetBallType = null;
 
 	public ScoreBoard() {
 		this.scoreboard = new ScoreBoardPanel();
@@ -62,6 +66,27 @@ public class ScoreBoard {
 			calcValues();
 			drawBackground(g2d);
 			drawMatchScore(g2d);
+			drawTargetBall(g2d);
+			drawBreak(g2d);
+		}
+
+		private void drawBreak(Graphics2D g) {
+			int brk = 0;
+			if (turn == PLAYER_1) {
+				brk = player1.getCurrentBreak();
+			} else {
+				brk = player2.getCurrentBreak();
+			}
+			 if (brk <= 0)
+				return;
+			Font font = new Font("Calibri", Font.BOLD, 20);
+			FontMetrics fm = getFontMetrics(font);
+			g.setColor(white);
+			g.setFont(font);
+			String brkStr = "BREAK " + brk;
+			int w = fm.stringWidth(brkStr);
+			int v_start = height - (vmiddle - 20 +6) / 2;
+			g.drawString(brkStr, width - w - 30, v_start);
 		}
 
 		private void calcValues() {
@@ -135,6 +160,31 @@ public class ScoreBoard {
 						height / 4);
 			}
 		}
+
+		private void drawTargetBall(Graphics2D g) {
+			if (targetBallType == null)
+				return;
+			Ellipse2D.Double ball = new Ellipse2D.Double(0, 0, Ball.RADIUS * 2,
+					Ball.RADIUS * 2);
+			double y = vmiddle + vmiddle / 2 - Ball.RADIUS;
+			double x = Ball.RADIUS;
+			ball.y = y;
+			if (targetBallType == BallType.COLOR_BALL) {
+				for (int i = BallType.YELLOW_BALL.getTypeValue(); i <= BallType.BLACK_BALL
+						.getTypeValue(); i++) {
+					g.setColor(PlayGround.ballColors[i]);
+					ball.x = x + (i - BallType.YELLOW_BALL.getTypeValue()) * 3
+							* Ball.RADIUS;
+					g.fill(ball);
+				}
+			} else {
+				g
+						.setColor(PlayGround.ballColors[targetBallType
+								.getTypeValue()]);
+				ball.x = x;
+				g.fill(ball);
+			}
+		}
 	}
 
 	public void refresh() {
@@ -163,5 +213,13 @@ public class ScoreBoard {
 
 	public void setTurn(int turn) {
 		this.turn = turn;
+	}
+
+	public BallType getTargetBallType() {
+		return targetBallType;
+	}
+
+	public void setTargetBallType(BallType targetBallType) {
+		this.targetBallType = targetBallType;
 	}
 }

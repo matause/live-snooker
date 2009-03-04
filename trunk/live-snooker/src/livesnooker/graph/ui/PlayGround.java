@@ -31,7 +31,7 @@ import livesnooker.graph.util.SnookerTableConstants;
 
 public class PlayGround {
 	// painting metris
-	private static final Color ballColors[] = new Color[] {
+	public static final Color ballColors[] = new Color[] {
 			ColorConstants.BALL_WHITE, ColorConstants.BALL_RED,
 			ColorConstants.BALL_YELLOW, ColorConstants.BALL_GREEN,
 			ColorConstants.BALL_BROWN, ColorConstants.BALL_BLUE,
