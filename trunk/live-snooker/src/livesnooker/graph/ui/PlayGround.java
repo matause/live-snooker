@@ -262,7 +262,6 @@ public class PlayGround {
 		}
 
 		private void paintBalls(Graphics2D g) {
-			System.out.println("paint table");
 			Ellipse2D.Double circle = new Ellipse2D.Double(0, 0,
 					2 * Ball.RADIUS, 2 * Ball.RADIUS);
 			for (Ball ball : table.getBalls()) {
