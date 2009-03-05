@@ -15,8 +15,8 @@ public class SnookerTableConstants {
 	private static final double SCALE = TABLE_LENGTH / O_TABLE_LENGTH;
 	public static final double TABLE_WIDTH = O_TABLE_WIDTH * SCALE;
 	
-	public static final double BALL_RADIUS = O_BALL_RADIUS * SCALE;
-	//public static final double BALL_RADIUS = 8.5;
+	//public static final double BALL_RADIUS = O_BALL_RADIUS * SCALE;
+	public static final double BALL_RADIUS = 8.5;
 	public static final double BAULK_LINE_TO_BOTTOM = O_BAULK_LINE_TO_BOTTOM
 			* SCALE;
 	public static final double BAULK_D_RADIUS = O_BAULK_D_RADIUS * SCALE;
