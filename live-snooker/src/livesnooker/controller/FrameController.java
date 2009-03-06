@@ -29,6 +29,7 @@ public class FrameController {
 	public void startFrame() {
 		if (inFrame)
 			return;
+		clearingTable = false;
 		// clear player info
 		playground.getScoreBoard().getPlayer1().setCurrentBreak(0);
 		playground.getScoreBoard().getPlayer1().setFrameScore(0);
