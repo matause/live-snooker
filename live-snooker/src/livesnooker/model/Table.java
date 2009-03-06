@@ -263,7 +263,7 @@ public class Table {
 		}
 		// // for test
 		for (int j = 1; j < 15; j++) {
-			balls[j].setActive(false);
+			balls[j].setActive(true);
 		}
 	}
 
