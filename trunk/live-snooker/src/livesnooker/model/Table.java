@@ -1,6 +1,5 @@
 package livesnooker.model;
 
-import java.awt.Frame;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.util.Collection;
@@ -303,7 +302,9 @@ public class Table {
 			} else if (Table.LENGTH - Ball.RADIUS - ball.getPositionX() < diameter) {
 				pot = true;
 			} else if (Math.abs(Table.LENGTH / 2 - ball.getPositionX()) < diameter) {
-				if (Math.abs(ball.getSpeedY()) > Math.abs(ball.getSpeedX()) / 3) {
+				if (ball.getSpeedY() < 0
+						&& Math.abs(ball.getSpeedY()) > Math.abs(ball
+								.getSpeedX()) / 3) {
 					pot = true;
 				}
 			}
@@ -314,7 +315,9 @@ public class Table {
 			} else if (Table.LENGTH - Ball.RADIUS - ball.getPositionX() < diameter) {
 				pot = true;
 			} else if (Math.abs(Table.LENGTH / 2 - ball.getPositionX()) < diameter) {
-				if (Math.abs(ball.getSpeedY()) > Math.abs(ball.getSpeedX()) / 3) {
+				if (ball.getSpeedY() > 0
+						&& Math.abs(ball.getSpeedY()) > Math.abs(ball
+								.getSpeedX()) / 3) {
 					pot = true;
 				}
 			}
@@ -429,16 +432,14 @@ public class Table {
 		}
 		for (Ball ball : balls) {
 			if (ball.getBallType() == ballType) {
-				// TODO more complicated place algorithm
 				ball.setActive(true);
 				ball.setSpeedX(0);
 				ball.setSpeedY(0);
 				ball.setHRotation(0);
 				ball.setVRotation(0);
-				ball.setPositionX(SnookerTableConstants.PLACE_POINTS[ballType
-						.getTypeValue()].x);
-				ball.setPositionY(SnookerTableConstants.PLACE_POINTS[ballType
-						.getTypeValue()].y);
+				Point p = getPointToPlace(ballType);
+				ball.setPositionX(p.x);
+				ball.setPositionY(p.y);
 
 			}
 		}
@@ -451,5 +452,44 @@ public class Table {
 			}
 		}
 		return true;
+	}
+
+	private Point getPointToPlace(BallType ballType) {
+		Point self = SnookerTableConstants.PLACE_POINTS[ballType.getTypeValue()];
+		if (placeAvailable(self.x, self.y)) {
+			return self;
+		} else {
+			// find the highest available point
+			for (int i = BallType.BLACK_BALL.getTypeValue(); i >= BallType.YELLOW_BALL
+					.getTypeValue(); i--) {
+				Point p = SnookerTableConstants.PLACE_POINTS[i];
+				if (placeAvailable(p.x, p.y))
+					return p;
+			}
+			// no point is available , find the place next to the original point
+			int x = self.x;
+			while (true) {
+				x += 1;
+				if (placeAvailable(x, self.y)) {
+					return new Point(x, self.y);
+				}
+				if (x >= Table.LENGTH)
+					x = (int) Ball.RADIUS;
+			}
+		}
+	}
+
+	private boolean placeAvailable(double x, double y) {
+		for (Ball ball : balls) {
+			if (ball.isActive()) {
+				if (distance(ball.getPositionX(), ball.getPositionY(), x, y) < 2 * Ball.RADIUS)
+					return false;
+			}
+		}
+		return true;
+	}
+
+	private double distance(double x1, double y1, double x2, double y2) {
+		return Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
 	}
 }
